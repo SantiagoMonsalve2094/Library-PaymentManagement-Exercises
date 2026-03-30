@@ -1,18 +1,11 @@
-using System.Text.RegularExpressions;
-
 namespace PaymentManagement.Domain;
 
 public class CreditCardPayment : IPaymentMethod
 {
     public CreditCardPayment(string cardHolder, string cardNumber)
     {
-        if (string.IsNullOrWhiteSpace(cardHolder))
-            throw new ArgumentException("Card holder cannot be empty.", nameof(cardHolder));
-        if (string.IsNullOrWhiteSpace(cardNumber))
-            throw new ArgumentException("Card number cannot be empty.", nameof(cardNumber));
-
         CardHolder = cardHolder;
-        CardNumber = cardNumber.Replace(" ", string.Empty);
+        CardNumber = cardNumber;
     }
 
     public string Name => "Tarjeta de Crédito";
@@ -21,7 +14,7 @@ public class CreditCardPayment : IPaymentMethod
 
     public bool ProcessPayment(decimal amount)
     {
-        if (!Regex.IsMatch(CardNumber, @"^\d{16}$"))
+        if (CardNumber.Length != 16)
             throw new InvalidOperationException("Número de tarjeta inválido.");
 
         Console.WriteLine($"[Tarjeta] Cobro aprobado por {amount:C} para {CardHolder}.");
@@ -33,11 +26,6 @@ public class DigitalWalletPayment : IPaymentMethod
 {
     public DigitalWalletPayment(string walletId, decimal availableBalance)
     {
-        if (string.IsNullOrWhiteSpace(walletId))
-            throw new ArgumentException("Wallet id cannot be empty.", nameof(walletId));
-        if (availableBalance < 0)
-            throw new ArgumentOutOfRangeException(nameof(availableBalance), "Balance cannot be negative.");
-
         WalletId = walletId;
         AvailableBalance = availableBalance;
     }
@@ -60,12 +48,7 @@ public class DigitalWalletPayment : IPaymentMethod
 public class BankTransferPayment : IPaymentMethod
 {
     public BankTransferPayment(string bankAccountNumber)
-    {
-        if (string.IsNullOrWhiteSpace(bankAccountNumber))
-            throw new ArgumentException("Bank account number cannot be empty.", nameof(bankAccountNumber));
-
-        BankAccountNumber = bankAccountNumber;
-    }
+        => BankAccountNumber = bankAccountNumber;
 
     public string Name => "Transferencia Bancaria";
     public string BankAccountNumber { get; }

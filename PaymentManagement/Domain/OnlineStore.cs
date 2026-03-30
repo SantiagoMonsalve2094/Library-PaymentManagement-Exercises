@@ -7,28 +7,10 @@ public class OnlineStore
     private readonly PaymentProcessor _paymentProcessor = new();
 
     public void AddOrder(Order order)
-    {
-        ArgumentNullException.ThrowIfNull(order);
-
-        var exists = _orders.Any(o => o.Id == order.Id);
-        if (exists)
-            throw new InvalidOperationException($"Ya existe una orden con id {order.Id}.");
-
-        _orders.Add(order);
-    }
+        => _orders.Add(order);
 
     public void AddPaymentMethod(IPaymentMethod paymentMethod)
-    {
-        ArgumentNullException.ThrowIfNull(paymentMethod);
-
-        var exists = _paymentMethods.Any(pm =>
-            string.Equals(pm.Name, paymentMethod.Name, StringComparison.OrdinalIgnoreCase));
-
-        if (exists)
-            throw new InvalidOperationException($"Ya existe un método de pago llamado \"{paymentMethod.Name}\".");
-
-        _paymentMethods.Add(paymentMethod);
-    }
+        => _paymentMethods.Add(paymentMethod);
 
     public void ProcessOrderPayment(int orderId, string paymentMethodName)
     {

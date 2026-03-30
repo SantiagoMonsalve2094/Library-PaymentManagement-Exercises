@@ -5,17 +5,7 @@ public class LibraryManager
     private readonly List<Material> _materials = [];
 
     public void AddMaterial(Material material)
-    {
-        ArgumentNullException.ThrowIfNull(material);
-
-        var alreadyExists = _materials.Any(m =>
-            string.Equals(m.Title, material.Title, StringComparison.OrdinalIgnoreCase));
-
-        if (alreadyExists)
-            throw new InvalidOperationException($"Ya existe un material con el título \"{material.Title}\".");
-
-        _materials.Add(material);
-    }
+        => _materials.Add(material);
 
     public void ShowAvailableMaterials()
     {
@@ -52,9 +42,6 @@ public class LibraryManager
 
     private Material FindByTitle(string title)
     {
-        if (string.IsNullOrWhiteSpace(title))
-            throw new ArgumentException("Title cannot be empty.", nameof(title));
-
         var material = _materials.FirstOrDefault(m =>
             string.Equals(m.Title, title, StringComparison.OrdinalIgnoreCase));
 
