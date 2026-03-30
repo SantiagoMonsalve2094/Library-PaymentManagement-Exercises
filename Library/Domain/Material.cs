@@ -2,24 +2,12 @@ namespace Library.Domain;
 
 public abstract class Material
 {
-    private readonly int _maxStock;
-
     protected Material(string title, string author, int publishYear, int stock)
     {
-        if (string.IsNullOrWhiteSpace(title))
-            throw new ArgumentException("Title cannot be empty.", nameof(title));
-        if (string.IsNullOrWhiteSpace(author))
-            throw new ArgumentException("Author cannot be empty.", nameof(author));
-        if (publishYear <= 0)
-            throw new ArgumentOutOfRangeException(nameof(publishYear), "Publish year must be positive.");
-        if (stock < 0)
-            throw new ArgumentOutOfRangeException(nameof(stock), "Stock cannot be negative.");
-
         Title = title;
         Author = author;
         PublishYear = publishYear;
         Stock = stock;
-        _maxStock = stock;
     }
 
     public string Title { get; }
@@ -37,13 +25,7 @@ public abstract class Material
         Stock--;
     }
 
-    protected void IncreaseStock()
-    {
-        if (Stock >= _maxStock)
-            throw new InvalidOperationException($"\"{Title}\" ya está completamente disponible.");
-
-        Stock++;
-    }
+    protected void IncreaseStock() => Stock++;
 
     public abstract string ObtainDescription();
 }
@@ -53,11 +35,6 @@ public class Book : Material, ILoanable
     public Book(string title, string author, int publishYear, int stock, string isbn, int pages)
         : base(title, author, publishYear, stock)
     {
-        if (string.IsNullOrWhiteSpace(isbn))
-            throw new ArgumentException("ISBN cannot be empty.", nameof(isbn));
-        if (pages <= 0)
-            throw new ArgumentOutOfRangeException(nameof(pages), "Pages must be positive.");
-
         ISBN = isbn;
         Pages = pages;
     }
@@ -67,9 +44,6 @@ public class Book : Material, ILoanable
 
     public bool Loan(string borrower)
     {
-        if (string.IsNullOrWhiteSpace(borrower))
-            throw new ArgumentException("Borrower cannot be empty.", nameof(borrower));
-
         DecreaseStock();
         Console.WriteLine($"Se prestó \"{Title}\" a {borrower}.");
         return true;
@@ -96,9 +70,6 @@ public class Magazine : Material, ILoanable
         int issueNumber)
         : base(title, author, publishYear, stock)
     {
-        if (issueNumber <= 0)
-            throw new ArgumentOutOfRangeException(nameof(issueNumber), "Issue number must be positive.");
-
         PublicationFrequency = publicationFrequency;
         IssueNumber = issueNumber;
     }
@@ -108,9 +79,6 @@ public class Magazine : Material, ILoanable
 
     public bool Loan(string borrower)
     {
-        if (string.IsNullOrWhiteSpace(borrower))
-            throw new ArgumentException("Borrower cannot be empty.", nameof(borrower));
-
         DecreaseStock();
         Console.WriteLine($"Se prestó la revista \"{Title}\" a {borrower}.");
         return true;
